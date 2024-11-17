@@ -1,0 +1,625 @@
+orleans_mission_group = {
+	slot = 1
+	generic = no
+	ai = yes
+	potential = {
+		tag = ORL
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	rebuild_orleanais = {
+		icon = mission_monarch_in_throne_room
+		required_missions { }
+		position = 1
+		provinces_to_highlight = {
+			province_id = 184
+		}
+		trigger = {
+			184 = {
+				owned_by = ROOT
+				development = 20
+				NOT = {devastation = 1}
+			}
+		}
+		effect = {
+			set_capital = 184
+			add_country_modifier = {
+				name = orleanais_rebuilt
+				duration = 7300
+			}
+			184 = {
+				if = {
+					limit = {
+						NOT = { province_has_center_of_trade_of_level = 3 }
+					}
+					add_center_of_trade_level = 1
+				}
+				else = {
+					add_base_production = 3
+				}
+			}
+		}
+	}
+	develop_orleans = {
+		icon = mission_european_church
+		required_missions {
+			to_war
+			rebuild_orleanais
+		}
+		position = 3
+		provinces_to_highlight = {
+			if = {
+				limit = {
+					num_of_owned_provinces_with = {
+						value = 4
+						OR = {
+							has_tax_building_trigger = yes
+							has_production_building_trigger = yes
+						}
+					}
+				}
+			}
+			else = {
+				owned_by = ROOT
+				NOT = {
+					OR = {
+						has_tax_building_trigger = yes
+						has_production_building_trigger = yes
+					}
+				}
+			}
+		}
+		trigger = {
+			184 = {
+				has_trade_building_trigger = yes
+			}
+			num_of_owned_provinces_with = {
+				value = 4
+				OR = {
+					has_tax_building_trigger = yes
+					has_production_building_trigger = yes
+				}
+			}
+		}
+		effect = {
+			random_owned_province = {
+				add_base_tax = 1
+				type = random
+				amount = 2
+			}
+			random_owned_province = {
+				add_base_production = 1
+				type = random
+				amount = 2
+			}
+			random_owned_province = {
+				add_base_manpower = 1
+				type = random
+				amount = 2
+			}
+		}
+	}
+
+	cathedrale_dorleans = {
+		icon = mission_european_church
+		required_missions {
+			develop_orleans
+		}
+		position = 5
+		provinces_to_highlight = {
+		}
+		trigger = {
+			184 = {
+				OR = {
+					AND = {
+						has_building = temple
+						base_tax = 10
+						province_has_current_tech_fort_trigger = yes
+					}
+					has_building = cathedral
+				}
+			}
+		}
+		effect = {
+			if = {
+				trigger = {
+					has_building = cathedral
+				}
+				add_base_tax = 2
+			}
+			else_if = {
+				trigger = {
+					has_building = temple
+				}
+				add_building = cathedral
+			}
+			else = {
+				add_building = cathedral
+			}
+			184 = {
+				add_province_modifier = {
+					name = cathedral_in_orleans
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+orleans_mission_group = {
+	slot = 2
+	generic = no
+	ai = yes
+	potential = {
+		tag = ORL
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	expand_orleans = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			usurp_the_french
+			develop_orleans
+		}
+		position = 4
+		provinces_to_highlight = {
+		}
+		trigger = {
+			total_development = 180
+			num_of_owned_provinces_with = {
+				value = 10
+				OR = {
+					has_tax_building_trigger = yes
+					has_production_building_trigger = yes
+				}
+			}
+		}
+		effect = {
+			if = {
+				trigger = {
+					ORL = { 
+						NOT = { is_great_power = yes }
+					}
+				}
+				add_country_modifier = {
+					name = orl_regional_power
+					duration = 7300
+					desc = orl_expand_orleans_tt
+				}
+			}
+			else = {
+				add_country_modifier = {
+					name = orl_regional_power
+					duration = -1
+				}
+			}
+		}
+	}
+}
+
+orleans_mission_group = {
+	slot = 3
+	generic = no
+	ai = yes
+	potential = {
+		tag = ORL
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	find_allies = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			
+		}
+		position = 1
+		provinces_to_highlight = {
+		}
+		trigger = {
+			if = {
+				limit = {
+					is_subject = yes
+					is_subject_of = FRA
+				}
+				OR = {
+					calc_true_if = {
+						desc = orl_orleanaise_allies_at
+						all_known_country = {
+							OR = {
+								is_rival = FRA
+								is_enemy = FRA
+							}
+							has_opinion = {
+								who = ROOT
+								value = 100
+							}
+						}
+						amount = 2
+					}
+					liberty_desire = 100
+				}
+			}
+			else_if = {
+				limit = {
+					is_subject = yes
+					NOT = { is_subject_of = FRA }
+				}
+				OR = {
+					overlord = {
+						calc_true_if = {
+						desc = orl_orleanaise_allies_bt
+							all_known_country = {
+								OR = {
+									is_rival = PREV
+									is_enemy = PREV
+								}
+								has_opinion = {
+									who = ROOT
+									value = 100
+								}
+							}
+							amount = 2
+						}
+					}
+					liberty_desire = 80
+				}
+			}
+			else = {
+				is_subject = no
+			}
+		}
+		effect = {
+			if = {
+				limit = {
+					is_subject = yes
+				}
+				country_event = {
+					id = flavor_orl.1
+				}
+			}
+			else = {
+				add_dip_power = 100
+			}
+		}
+	}
+	to_war = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			rebuild_orleanais
+			find_allies
+			prepare_the_army
+		}
+		position = 2
+		provinces_to_highlight = {
+		}
+		trigger = {
+			is_subject = no
+		}
+		effect = {
+			183 = {
+				add_permanent_claim = ORL
+			}
+			orleans_area = {
+				add_permanent_claim = ORL
+			}
+			add_country_modifier = {
+				name = orleanaise_fervor
+				duration = 3650
+			}
+			if = {
+				trigger = {
+					is_in_war = {
+						attacker_leader = ROOT
+						defender_leader = FRA
+					}
+				}
+				set_country_flag = orl_independence_war
+			}
+		}
+	}
+	usurp_the_french = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			to_war
+		}
+		position = 3
+		provinces_to_highlight = {
+		}
+		trigger = {
+			is_subject = no
+			OR = {
+				NOT = { exists = FRA}
+				total_development = FRA
+				AND = {
+					grown_by_development = 40
+					calc_true_if = {
+						all_known_country = {
+							is_subject_of_type_with_overlord = {
+								who = FRA
+								type = appanage
+							}
+							has_opinion = {
+								who = ROOT
+								value = 50
+							}
+						}
+						amount = 3
+					}
+				}
+			}
+		}
+		effect = {
+			ile_de_france_area = {
+				add_permanent_claim = ORL
+			}
+			normandy_area = {
+				add_permanent_claim = ORL
+			}
+			champagne_area = {
+				add_permanent_claim = ORL
+			}
+			loire_area = {
+				add_permanent_claim = ORL
+			}
+			187 = {
+				add_permanent_claim = ORL
+			}
+			add_country_modifier = {
+				name = usurp_the_french
+				duration = 5475
+			}
+			desc = orl_transfer_appanage
+			if = {
+				trigger = {
+					exists = FRA
+				}
+				hidden_effect = {
+					IF = {
+						AMG = {
+							has_opinion = {
+								who = ROOT
+								value = 50
+							}
+							exists = yes
+						}
+						create_subject = {
+							subject_type = appanage
+							subject = AMG
+						}
+					}
+					IF = {
+						AUV = {
+							has_opinion = {
+								who = ROOT
+								value = 50
+							}
+							exists = yes
+						}
+						create_subject = {
+							subject_type = appanage
+							subject = AUV
+						}
+					}
+					IF = {
+						BOU = {
+							has_opinion = {
+								who = ROOT
+								value = 50
+							}
+							exists = yes
+						}
+						create_subject = {
+							subject_type = appanage
+							subject = BOU
+						}
+					}
+					IF = {
+						FOI = {
+							has_opinion = {
+								who = ROOT
+								value = 50
+							}
+							exists = yes
+						}
+						create_subject = {
+							subject_type = appanage
+							subject = FOI
+						}
+					}
+				}
+			}
+		}
+	}
+	take_normandy = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			usurp_the_french
+			support_joan
+		}
+		position = 4
+		provinces_to_highlight = {
+			area = normandy_area
+			NOT = { owned_by = ROOT }
+		}
+		trigger = {
+			normandy_area = {
+				owned_by = ROOT
+				type = all
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = orl_take_normandy
+				duration = 7300
+			}
+			france_region = {
+				add_permanent_claim = ORL
+			}
+		}
+	}
+	unite_france = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			take_normandy
+			expand_orleans
+			the_retrial_of_joan
+		}
+		position = 5
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##Mission Start
+	martyred_lady = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			cathedrale_dorleans
+			unite_france
+			a_large_army
+		}
+		position = 6
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##
+	
+}
+##BranchEnd 2
+##BranchStart 3
+orleans_mission_group = {
+	slot = 4
+	generic = no
+	ai = yes
+	potential = {
+		tag = ORL
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	##Mission Start
+	support_joan = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			to_war
+		}
+		position = 3
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##Mission Start
+	the_retrial_of_joan = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			usurp_the_french
+			support_joan
+		}
+		position = 4
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##
+	
+}
+##BranchEnd 3
+##BranchStart 4
+orleans_mission_group = {
+	slot = 5
+	generic = no
+	ai = yes
+	potential = {
+		tag = ORL
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	##Mission Start
+	prepare_the_army = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			
+		}
+		position = 1
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##Mission Start
+	modernize_forces = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			to_war prepare_the_army
+		}
+		position = 3
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##Mission Start
+	a_large_army = {
+		icon = mission_monarch_in_throne_room
+		required_missions {
+			modernize_forces
+		}
+		position = 5
+		provinces_to_highlight = {
+			##PROVINCESHIGHLIGHTCODE
+		}
+		trigger = {
+			##MISSIONTRIGGER
+		}
+		effect = {
+			##MISSIONEFFECT
+		}
+	}
+	##Mission End
+	##
+	
+}
+##BranchEnd 4
