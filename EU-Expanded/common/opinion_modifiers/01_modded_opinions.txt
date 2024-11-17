@@ -1,0 +1,4 @@
+orl_defeated_france_alone = {
+	opinion = 150
+	yearly_decay = -3
+}
